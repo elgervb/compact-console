@@ -29,6 +29,35 @@ class Console
 		
 		return empty( $result ) ? $aDefault : $result;
 	}
+	
+	/**
+	 * Run a command an show the result in the console
+	 * @param string $command
+	 */
+	public function run($command){
+	    
+	    $parts = explode(".", $command);
+	    $className=ucwords($parts[0]);
+	    $method=$parts[1];
+	    
+	    if($className && $method && @include_once('commands/'.$className.'.php') ){
+	        $class = new $className();
+               if (method_exists($class, $method)){
+                   $result = $class->$method();
+                   
+                   if (is_scalar($result)){
+                       $this->writeln($result);
+                       $this->writeln("");
+                   }
+               }
+               else{
+                   $this->writeln($className . ' exists, but ' . $method . ' not');
+               }
+	    }else{
+	        $this->writeln("Could not find command " . $command);
+	    }
+	   
+	}
     
     /**
      * Write a message to the console
