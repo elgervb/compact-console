@@ -2,6 +2,8 @@
 
 class Console
 {
+    const VERSION = "0.0.1";
+    
     /**
      * Create a new console
      */
@@ -36,14 +38,17 @@ class Console
 	 */
 	public function run($command){
 	    
-	    $parts = explode(".", $command);
+	    $args = explode(" ", $command);
+	    $args[count($args)] = $this;
+	    $parts = explode(".", array_shift( $args ) );
 	    $className=ucwords($parts[0]);
 	    $method=$parts[1];
 	    
 	    if($className && $method && @include_once('commands/'.$className.'.php') ){
 	        $class = new $className();
                if (method_exists($class, $method)){
-                   $result = $class->$method();
+                   
+                   $result = call_user_func_array(array($class, $method), $args);
                    
                    if (is_scalar($result)){
                        $this->writeln($result);
