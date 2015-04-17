@@ -42,6 +42,7 @@ class Encode
         try{
             $encoder = HashFactory::createHash($method);
         
+            $this->console->writeln($method);
             $this->console->writeln($encoder->encrypt($string));
         }catch(\Exception $ex){
             $this->console->writeln($ex->getMessage());
