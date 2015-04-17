@@ -3,18 +3,20 @@
 use compact\utils\FormattingUtils;
 class Fs
 {
-
-    public function __construct()
+    private $console;
+    
+    public function __construct($console)
     {
-    	
+        $this->console = $console;	
     }
+    
     public function cd($dir){
         if (!@chdir($dir)){
             return "Could not change directory to: " . $dir;
         }
     }
     
-    public function cleartemp($console){
+    public function cleartemp(){
         $tmpDir = sys_get_temp_dir();
         $iter = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator( $tmpDir ),\RecursiveIteratorIterator::CHILD_FIRST);
         
@@ -39,8 +41,8 @@ class Fs
         
         $msg = "Found " . FormattingUtils::formatSize($totalSize) . " in " . number_format($nrOfDirs, 0, ',', '.') . " directories and " . number_format($nrOfFiles, 0, ',', '.') . " files.";
         
-        $console->writeln($msg);
-        $input = $console->input("Do you want to clear temp dir? (y / n) ");
+        $this->console->writeln($msg);
+        $input = $this->console->input("Do you want to clear temp dir? (y / n) ");
         
         if ($input !== "y"){
             return;
@@ -53,10 +55,10 @@ class Fs
             {
                 $result = @unlink( $file );
                 if ($result){
-                    $console->writeln("Delete file " . $file);
+                    $this->console->writeln("Delete file " . $file);
                 }
                 else{
-                    $console->writeln("Failed to delete file " . $file);
+                    $this->console->writeln("Failed to delete file " . $file);
                 }
         
             }
@@ -70,16 +72,48 @@ class Fs
             {
                 $result = @rmdir($dir);
                 if ($result){
-                    $console->writeln("Delete dir " . $file);
+                    $this->console->writeln("Delete dir " . $file);
                 }
                 else{
-                    $console->writeln("Failed to delete dir " . $file);
+                    $this->console->writeln("Failed to delete dir " . $file);
                 }
+            }
+        }
+    }
+    
+    public function ls(){
+        $workingDir = $this->pwd();
+        $dir = new \DirectoryIterator( $workingDir );
+        
+        /* @var $file \SplFileInfo */
+        foreach ($dir as $file)
+        {
+            $relative = $this->makeString(str_replace( $workingDir, "", $file ), 50);
+            if ($file->isDir())
+            {
+                $this->console->writeln( $relative );
+            }
+            else
+            {
+                $this->console->writeln( $relative . " " . FormattingUtils::formatSize( $file->getSize() ) . "" );
             }
         }
     }
     
     public function pwd(){
         return getcwd();
+    }
+    
+    private function makeString($string, $maxChars){
+        $length = strlen($string);
+        if ($length === $maxChars){
+            return $string;
+        }
+        else if($length < $maxChars){
+            return $string . str_repeat(" ", $maxChars - $length);
+        }
+        else{
+            return substr($string, 0, $maxChars-3) . '...';
+        }
     }
 }
