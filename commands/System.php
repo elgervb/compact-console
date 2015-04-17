@@ -3,10 +3,11 @@
 use compact\utils\FormattingUtils;
 class System
 {
-
-    public function __construct()
+    private $console;
+    
+    public function __construct($console)
     {
-    	
+        $this->console = $console;	
     }
     
     public function memory(){
