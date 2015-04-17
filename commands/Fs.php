@@ -81,6 +81,15 @@ class Fs
         }
     }
     
+    public function more($file){
+        if (is_file($file)){
+            $this->console->writeln(file_get_contents($file));
+        }
+        else{
+            $this->console->writeln($file . " is not a valid file.");
+        }
+    }
+    
     public function ls(){
         $workingDir = $this->pwd();
         $dir = new \DirectoryIterator( $workingDir );
