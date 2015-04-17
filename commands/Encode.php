@@ -1,6 +1,7 @@
 <?php
 
 use compact\hash\HashFactory;
+use compact\hash\decoder\Md5Decoder;
 
 class Encode
 {
@@ -33,6 +34,17 @@ class Encode
         else{
             $this->console->writeln($file . " is not a valid file.");
         }
+    }
+    
+    public function dehash($string=null, $method=null){
+        $string = $string ? $string : $this->console->input("String:\n");
+        $method = $method ? $method : $this->console->input("Hash method [MD5]:\n", "md5");
+        
+        $time_start = microtime(true);
+        $decoder = new MD5Decoder($method, Md5Decoder::DEFAULT_DEPTH, true, 100000);
+        $this->console->writeln("Match found! Password = " . $decoder->run($hash));
+        
+        $this->console->writeln("Executed in " . round((microtime(true) - $time_start), 4) . " sec");
     }
     
     public function hash($string=null, $method=null){
