@@ -1,10 +1,12 @@
 <?php
 
+use compact\hash\HashFactory;
+
 class Encode
 {
     private $console;
     
-    public function __construct($console)
+    public function __construct( Console $console)
     {
     	$this->console = $console;
     }
@@ -29,7 +31,20 @@ class Encode
             fclose($fp);
         }
         else{
-            $this->console->writeln($file . " is not a valid file. Please check path.");
+            $this->console->writeln($file . " is not a valid file.");
+        }
+    }
+    
+    public function hash($string=null, $method=null){
+        $string = $string ? $string : $this->console->input("String:\n");
+        $method = $method ? $method : $this->console->input("Hash method [MD5]:\n", "md5");
+        
+        try{
+            $encoder = HashFactory::createHash($method);
+        
+            $this->console->writeln($encoder->encrypt($string));
+        }catch(\Exception $ex){
+            $this->console->writeln($ex->getMessage());
         }
     }
 }
