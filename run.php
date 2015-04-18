@@ -1,6 +1,7 @@
 <?php
 
 include 'lib/compact.phar';
+include 'lib/imagemanipulation.phar';
 include './Console.php';
 
 $c = new Console();
