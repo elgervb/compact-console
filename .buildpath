@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
+	<buildpathentry combineaccessrules="false" kind="prj" path="/imagemanipulation"/>
+	<buildpathentry kind="lib" path="lib/imagemanipulation.phar"/>
 	<buildpathentry kind="src" path=""/>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
 	<buildpathentry kind="lib" path="lib/compact.phar"/>
