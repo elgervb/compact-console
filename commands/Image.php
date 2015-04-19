@@ -31,6 +31,6 @@ class Image
     
     
     public function greyscale($image){
-        $this->builder($image)->grayscale()->save(new \SplFileInfo($image), true);
+        $this->builder($image)->grayscale()->save();
     }
 }
