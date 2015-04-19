@@ -4,7 +4,6 @@ use compact\handler\AssertHandler;
 use compact\handler\ErrorHandler;
 use compact\logging\Logger;
 use compact\logging\recorder\impl\ScreenRecorder;
-use compact\handler\ExceptionHandler;
 
 class Console
 {
@@ -52,10 +51,18 @@ class Console
 	    $args = explode(" ", $command);
 	    $parts = explode(".", array_shift( $args ) );
 	    $className=ucwords($parts[0]);
-	    $method=$parts[1];
-	    
-	    if($className && $method && @include_once('commands/'.$className.'.php') ){
-	        $class = new $className($this);
+	    if (count($parts) > 1){
+    	    $method=$parts[1];
+	    }
+	    else{
+	        $method = "";
+	    }
+	        
+	    if($className && $method && @is_file('commands/'.$className.'.php') ){
+	        try{
+	            include_once('commands/'.$className.'.php');
+	            
+    	       $class = new $className($this);
                if (method_exists($class, $method)){
                    
                    $result = call_user_func_array(array($class, $method), $args);
@@ -66,8 +73,13 @@ class Console
                    }
                }
                else{
-                   $this->writeln($className . ' exists, but ' . $method . ' not');
+                   $this->writeln("Could not find command " . $command . ' in ' . $className);
                }
+	        }catch(\Exception $ex){
+	            $this->writeln($ex->getMessage());
+	            $this->writeln($ex->getTraceAsString());
+	            $this->writeln("\n");
+	        }
 	    }else{
 	        $this->writeln("Could not find command " . $command);
 	    }
