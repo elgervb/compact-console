@@ -1,5 +1,11 @@
 <?php
 
+use compact\handler\AssertHandler;
+use compact\handler\ErrorHandler;
+use compact\logging\Logger;
+use compact\logging\recorder\impl\ScreenRecorder;
+use compact\handler\ExceptionHandler;
+
 class Console
 {
     const VERSION = "0.0.1";
@@ -12,6 +18,11 @@ class Console
         date_default_timezone_set( 'UTC' );
         
         compact\ClassLoader::create();
+        
+        AssertHandler::enable();
+        new ErrorHandler(- 1, true, true, './error.log');
+        new Logger(new ScreenRecorder(null, Logger::WARNING));
+        new ExceptionHandler();
     }
     
     /**
