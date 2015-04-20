@@ -58,7 +58,7 @@ class Console
 	        $method = "";
 	    }
 	       
-	    $commandFile = 'commands/'.ucfirst($className).'.php';
+	    $commandFile = __DIR__ . '/commands/'.ucfirst($className).'.php';
 	    if($className && $method && is_file($commandFile) ){
 	        try{
 	            include_once($commandFile);
