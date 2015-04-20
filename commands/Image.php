@@ -29,6 +29,18 @@ class Image
         return new ImageBuilder(new \SplFileInfo($fileName));
     }
     
+    public function brightness($image, $rate = 5){
+        $this->builder($image)->brightness($rate)->save();
+    }
+    
+    public function colorize($image, $color = 'FFFFFF', $alpha = null){
+        $this->builder($image)->colorize($color, $alpha)->save();
+    }
+    
+    public function comic($image, $opacity = 40){
+        $this->builder($image)->comic($opacity)->save();
+    }
+    
     public function contrast($image, $rate = 5){
         $this->builder($image)->contrast($rate)->save();
     }
