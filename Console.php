@@ -57,10 +57,11 @@ class Console
 	    else{
 	        $method = "";
 	    }
-	        
-	    if($className && $method && @is_file('commands/'.$className.'.php') ){
+	       
+	    $commandFile = 'commands/'.ucfirst($className).'.php';
+	    if($className && $method && is_file($commandFile) ){
 	        try{
-	            include_once('commands/'.$className.'.php');
+	            include_once($commandFile);
 	            
     	       $class = new $className($this);
                if (method_exists($class, $method)){
