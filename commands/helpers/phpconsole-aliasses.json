@@ -1,0 +1,8 @@
+[
+{"alias":"cd","command":"fs.cd","guid":0},
+{"alias":"ls","command":"fs.ls","guid":1},
+{"alias":"cleartemp","command":"fs.cleartemp","guid":2},
+{"alias":"cleantemp","command":"fs.cleartemp","guid":3},
+{"alias":"more","command":"fs.more","guid":4},
+{"alias":"pwd","command":"fs.pwd","guid":5}
+]
