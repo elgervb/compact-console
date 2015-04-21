@@ -48,6 +48,18 @@ class Console
 	 */
 	public function run($command){
 	    
+	    // first see if there is an alias
+	    // TODO add namespaces
+	    include_once 'commands/helpers/AliasHelper.php';
+	    if (strstr($command, " ")){
+	       $parts = explode(" ", $command);
+	       $command = trim($parts[0]) . " " . trim(substr($command, strlen($parts[0]) - strlen($command)));
+	    }
+	    $aliasCommand = AliasHelper::getCommandFor($command);
+	    if ($aliasCommand !== null){
+	        $command = $aliasCommand;
+	    }
+	    
 	    $args = explode(" ", $command);
 	    $parts = explode(".", array_shift( $args ) );
 	    $className=ucwords($parts[0]);
