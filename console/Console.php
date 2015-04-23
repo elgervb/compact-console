@@ -4,7 +4,7 @@ namespace console;
 use compact\handler\AssertHandler;
 use compact\handler\ErrorHandler;
 use compact\logging\Logger;
-use commands\helpers\AliasHelper;
+use console\commands\helpers\AliasHelper;
 use compact\logging\recorder\impl\BufferedFileRecorder;
 
 class Console
@@ -56,9 +56,10 @@ class Console
 	    // first see if there is an alias
 	    $command = $this->getCommand($command);
 	    
+	    // explode into a class- and method name
 	    $args = explode(" ", $command);
 	    $parts = explode(".", array_shift( $args ) );
-	    $className=ucwords($parts[0]);
+	    $className='\\console\\commands\\'.ucfirst($parts[0]);
 	    if (count($parts) > 1){
     	    $method=$parts[1];
 	    }
@@ -66,7 +67,8 @@ class Console
 	        $method = "";
 	    }
 	       
-	    $commandFile = __DIR__ . '/commands/'.ucfirst($className).'.php';
+	    $commandFile = realpath(__DIR__.'/..') . $className.'.php';
+	    Logger::get()->logFinest("Check command file " . $commandFile);
 	    if($className && $method && is_file($commandFile) ){
 	        try{
 	            include_once($commandFile);
@@ -92,7 +94,6 @@ class Console
 	    }else{
 	        $this->writeln("Could not find command " . $command);
 	    }
-	   
 	}
 	
 	/**
@@ -107,6 +108,7 @@ class Console
 	    }
 	    $aliasCommand = AliasHelper::getCommandFor($command);
 	    if ($aliasCommand !== null){
+	        Logger::get()->logFine("Found command " . $aliasCommand . " for alias " . $command);
 	        $command = $aliasCommand;
 	    }
 	    
