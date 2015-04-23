@@ -5,7 +5,7 @@ use compact\handler\AssertHandler;
 use compact\handler\ErrorHandler;
 use compact\logging\Logger;
 use console\commands\helpers\AliasHelper;
-use compact\logging\recorder\impl\BufferedFileRecorder;
+use compact\logging\recorder\impl\FileRecorder;
 
 class Console
 {
@@ -22,7 +22,7 @@ class Console
         
         AssertHandler::enable();
         new ErrorHandler(- 1, true, true, './error.log');
-        new Logger( new BufferedFileRecorder(new \SplFileInfo(__DIR__ . '/../console.log') ), Logger::ALL);
+        new Logger( new FileRecorder(new \SplFileInfo(__DIR__ . '/../console.log') ), Logger::ALL);
         new ExceptionHandler();
         
         Logger::get()->logFine("created new logger");
@@ -52,7 +52,7 @@ class Console
 	 */
 	public function run($command){
 	    
-	    Logger::get()->logFine("Got command " . $command);
+	    Logger::get()->logFine("Got original command " . $command);
 	    // first see if there is an alias
 	    $command = $this->getCommand($command);
 	    
@@ -69,10 +69,11 @@ class Console
 	       
 	    $commandFile = realpath(__DIR__.'/..') . $className.'.php';
 	    Logger::get()->logFinest("Check command file " . $commandFile);
+	    
 	    if($className && $method && is_file($commandFile) ){
 	        try{
-	            include_once($commandFile);
-	            
+	           include_once($commandFile);
+	           
     	       $class = new $className($this);
                if (method_exists($class, $method)){
                    
@@ -102,14 +103,21 @@ class Console
 	 * @return Ambigous <string, NULL>
 	 */
 	private function getCommand($command){
-	    if (strstr($command, " ")){
-	        $parts = explode(" ", $command);
-	        $command = trim($parts[0]) . " " . trim(substr($command, strlen($parts[0]) - strlen($command)));
+	    $arguments = "";
+	    $match = preg_match("/(.*) (.*)/i", $command, $matches);
+	    
+	    $search = $command;
+	    if ($match){
+	        $search = $matches[1];
+	        if (count($matches) > 2){
+	           $arguments = $matches[2];
+	        }
 	    }
-	    $aliasCommand = AliasHelper::getCommandFor($command);
+	    Logger::get()->logFinest("Check for alias " . $search);
+	    $aliasCommand = AliasHelper::getCommandFor($search);
 	    if ($aliasCommand !== null){
-	        Logger::get()->logFine("Found command " . $aliasCommand . " for alias " . $command);
-	        $command = $aliasCommand;
+	        Logger::get()->logFine("Found command " . $aliasCommand . " for alias " . $command . " with args" .$arguments);
+	        $command = $aliasCommand . " " . $arguments;
 	    }
 	    
 	    return $command;
