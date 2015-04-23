@@ -1,3 +1,4 @@
 [
-{"alias":"ls","command":"fs.ls","guid":0}
+{"alias":"ls","command":"fs.ls","guid":0},
+{"alias":"cd","command":"fs.cd","guid":1}
 ]
