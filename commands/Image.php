@@ -1,4 +1,5 @@
 <?php
+namespace console\commands;
 
 use imagemanipulation\color\Color;
 use imagemanipulation\ImageBuilder;

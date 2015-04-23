@@ -1,9 +1,11 @@
 <?php
+namespace console;
 
 use compact\handler\AssertHandler;
 use compact\handler\ErrorHandler;
 use compact\logging\Logger;
-use compact\logging\recorder\impl\ScreenRecorder;
+use commands\helpers\AliasHelper;
+use compact\logging\recorder\impl\BufferedFileRecorder;
 
 class Console
 {
@@ -16,12 +18,14 @@ class Console
     {
         date_default_timezone_set( 'UTC' );
         
-        compact\ClassLoader::create();
+        \compact\ClassLoader::create();
         
         AssertHandler::enable();
         new ErrorHandler(- 1, true, true, './error.log');
-        new Logger(new ScreenRecorder(null, Logger::WARNING));
+        new Logger( new BufferedFileRecorder(new \SplFileInfo(__DIR__ . '/../console.log') ), Logger::ALL);
         new ExceptionHandler();
+        
+        Logger::get()->logFine("created new logger");
     }
     
     /**
@@ -48,17 +52,9 @@ class Console
 	 */
 	public function run($command){
 	    
+	    Logger::get()->logFine("Got command " . $command);
 	    // first see if there is an alias
-	    // TODO add namespaces
-	    include_once 'commands/helpers/AliasHelper.php';
-	    if (strstr($command, " ")){
-	       $parts = explode(" ", $command);
-	       $command = trim($parts[0]) . " " . trim(substr($command, strlen($parts[0]) - strlen($command)));
-	    }
-	    $aliasCommand = AliasHelper::getCommandFor($command);
-	    if ($aliasCommand !== null){
-	        $command = $aliasCommand;
-	    }
+	    $command = $this->getCommand($command);
 	    
 	    $args = explode(" ", $command);
 	    $parts = explode(".", array_shift( $args ) );
@@ -97,6 +93,24 @@ class Console
 	        $this->writeln("Could not find command " . $command);
 	    }
 	   
+	}
+	
+	/**
+	 * received a command and checks for an alias (if present). When the alias was found, the mapped command is returned
+	 * @param unknown $command
+	 * @return Ambigous <string, NULL>
+	 */
+	private function getCommand($command){
+	    if (strstr($command, " ")){
+	        $parts = explode(" ", $command);
+	        $command = trim($parts[0]) . " " . trim(substr($command, strlen($parts[0]) - strlen($command)));
+	    }
+	    $aliasCommand = AliasHelper::getCommandFor($command);
+	    if ($aliasCommand !== null){
+	        $command = $aliasCommand;
+	    }
+	    
+	    return $command;
 	}
     
     /**

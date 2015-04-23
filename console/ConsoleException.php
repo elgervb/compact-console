@@ -1,4 +1,5 @@
 <?php
+namespace console;
 
 class ConsoleException extends \Exception
 {

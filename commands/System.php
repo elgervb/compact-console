@@ -1,6 +1,8 @@
 <?php
+namespace console\commands;
 
 use compact\utils\FormattingUtils;
+use commands\helpers\AliasHelper;
 
 class System
 {
@@ -15,8 +17,6 @@ class System
         if (strstr($alias, " ") || strstr($alias, ".")){
             $this->console->writeln("Error: the alias cannot cantain spaces or .");
         }
-        // TODO add namespaces
-        include_once 'helpers/AliasHelper.php';
         AliasHelper::add($alias, $command);
     }
     

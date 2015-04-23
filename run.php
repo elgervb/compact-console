@@ -1,8 +1,9 @@
 <?php
+use console\Console;
 
-include 'lib/compact.phar';
+require 'lib/compact.phar';
 require 'lib/imagemanipulation.phar';
-include './Console.php';
+require 'console/Console.php';
 
 $c = new Console();
 $c->writeln("PHP Console version " . Console::VERSION . "\n\n");

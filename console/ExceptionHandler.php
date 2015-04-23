@@ -1,4 +1,5 @@
 <?php
+namespace console;
 
 use compact\logging\Logger;
 

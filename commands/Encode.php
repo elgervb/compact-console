@@ -1,4 +1,5 @@
 <?php
+namespace console\commands;
 
 use compact\hash\HashFactory;
 use compact\hash\decoder\Md5Decoder;

@@ -1,4 +1,5 @@
 <?php
+namespace console\commands;
 
 use compact\utils\FormattingUtils;
 class Fs

@@ -1,4 +1,5 @@
 <?php
+namespace console\commands;
 
 use compact\io\reader\StreamReader;
 use compact\io\writer\StreamWriter;

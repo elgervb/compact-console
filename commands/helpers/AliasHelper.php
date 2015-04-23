@@ -1,4 +1,6 @@
 <?php
+namespace commands\helpers;
+
 use compact\repository\json\JsonRepository;
 use compact\repository\DefaultModelConfiguration;
 
